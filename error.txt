@@ -1,0 +1,38 @@
+Error: the string "Invalid argument passed to contract KT1Lz22H2BD1o6SvViN5HbJe2MFjqvhRvp5F.
+At (unshown) location 0, value
+  (Pair (Pair 14 (Pair -12 12334))
+        (Pair (Pair (Pair 57 125) \"True\")
+              (Pair \"0x1234\"
+                    (Pair \"a string value\"
+                          (Pair \"2022-08-05T16:31:03.464Z\"
+                                (Pair 0 (Pair \"tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb\" (Some 4))))))))
+is invalid for type
+  pair (pair (nat %f1) (int %f2) (mutez %f3))
+       (pair (pair %f4 int nat) (bool %f5))
+       (bytes %f6)
+       (string %f7)
+       (timestamp %f8)
+       (int %f9)
+       (address %f10)
+       (option %f11 nat).
+At (unshown) location 6, value
+  (Pair (Pair (Pair 57 125) \"True\")
+        (Pair \"0x1234\"
+              (Pair \"a string value\"
+                    (Pair \"2022-08-05T16:31:03.464Z\"
+                          (Pair 0 (Pair \"tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb\" (Some 4)))))))
+is invalid for type
+  pair (pair (pair %f4 int nat) (bool %f5))
+       (bytes %f6)
+       (string %f7)
+       (timestamp %f8)
+       (int %f9)
+       (address %f10)
+       (option %f11 nat).
+At (unshown) location 7, value (Pair (Pair 57 125) \"True\")
+is invalid for type pair (pair %f4 int nat) (bool %f5).
+At (unshown) location 11, value \"True\" is invalid for type bool.
+At (unshown) location 11, unexpected string, only a primitive
+can be used here.
+Fatal error:
+  transfer simulation failed" was thrown, throw an Error :)
