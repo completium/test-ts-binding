@@ -1,0 +1,21 @@
+archetype test_binding
+
+variable s : int = 0
+
+record all {
+  a : nat;
+  b : int;
+  c : tez;
+  d : rational;
+  e : bool;
+  f : bytes;
+  g : string;
+  h : date;
+  i : duration;
+  j : address;
+  k : option<nat>
+} as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11))))
+
+entry myentry(r : all) {
+  s := r.a + r.b
+}

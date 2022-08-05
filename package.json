@@ -1,0 +1,35 @@
+{
+  "name": "test-ts-binding",
+  "version": "1.0.0",
+  "description": "Tests binding features",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "rm -rf ./build && npx tsc --outDir build && mocha --timeout 0 --slow 99999999999999999 ./build/tests/*.js",
+    "gen": "~/Projects/completium/archetype-lang/archetype.exe --show-contract-interface ./contracts/test_binding.arl | jq > ./contracts/test_binding.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/completium/test-ts-binding.git"
+  },
+  "keywords": [
+    "archetype",
+    "completium"
+  ],
+  "author": "Completium",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/completium/test-ts-binding/issues"
+  },
+  "homepage": "https://github.com/completium/test-ts-binding#readme",
+  "dependencies": {
+    "@completium/completium-cli": "^0.4.3",
+    "@completium/experiment-ts": "^0.0.17",
+    "mocha": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^9.1.1",
+    "typescript": "^4.7.4"
+  }
+}
