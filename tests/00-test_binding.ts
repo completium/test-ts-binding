@@ -1,4 +1,4 @@
-import { get_account, Nat, Int, Tez, Rational, Duration, Address, Option, set_mockup, set_mockup_now, set_quiet } from '@completium/experiment-ts'
+import { get_account, Nat, Int, Tez, Rational, Bytes, Duration, Address, Option, set_mockup, set_mockup_now, set_quiet } from '@completium/experiment-ts'
 
 const assert = require('assert')
 
@@ -39,7 +39,7 @@ describe('[Test_binding] Call entry', async () => {
       c : new Tez(12334, "mutez"),
       d : new Rational(0.456),
       e : true,
-      f : "0x1234",
+      f : new Bytes("0000"),
       g : "a string value",
       h : new Date(),
       i : new Duration(""),
