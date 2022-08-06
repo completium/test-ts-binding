@@ -1,9 +1,10 @@
-import { get_account, Nat, Int, Tez, Rational, Bytes, Duration, Address, Option, set_mockup, set_mockup_now, set_quiet } from '@completium/experiment-ts'
+import { Address, Bytes, Duration, get_account, Int, Nat, Option, Rational, set_mockup, set_mockup_now, set_quiet, Tez } from '@completium/experiment-ts'
 
 const assert = require('assert')
 
 import {
   test_binding,
+  all_cmp,
   all
 } from './test_binding'
 
@@ -23,6 +24,22 @@ set_quiet(true);
 
 set_mockup_now(new Date(Date.now()))
 
+/* Test data --------------------------------------------------------------- */
+
+const r_value : all = {
+  a : new Nat(14),
+  b : new Int(-12),
+  c : new Tez(12334, "mutez"),
+  d : new Rational(0.456),
+  e : true,
+  f : new Bytes("0000"),
+  g : "a string value",
+  h : new Date(),
+  i : new Duration(""),
+  j : new Address(alice.pkh),
+  k : new Option<Nat>(new Nat(4))
+}
+
 /* Scenario ---------------------------------------------------------------- */
 
 describe('[Test_binding] Contract deployment', async () => {
@@ -33,21 +50,14 @@ describe('[Test_binding] Contract deployment', async () => {
 
 describe('[Test_binding] Call entry', async () => {
   it("Call 'myentry'", async () => {
-    const r : all = {
-      a : new Nat(14),
-      b : new Int(-12),
-      c : new Tez(12334, "mutez"),
-      d : new Rational(0.456),
-      e : true,
-      f : new Bytes("0000"),
-      g : "a string value",
-      h : new Date(),
-      i : new Duration(""),
-      j : new Address(alice.pkh),
-      k : new Option<Nat>(new Nat(4))
-    }
-    await test_binding.myentry(r, { as : alice })
+    await test_binding.myentry(r_value, { as : alice })
+  })
+  it("Test 's' value", async () => {
     const s = await test_binding.get_s();
     assert(s.equals(new Int(2)))
+  })
+  it("Test 'r' value", async () => {
+    const r = await test_binding.get_r();
+    assert(all_cmp(r_value, r))
   })
 })

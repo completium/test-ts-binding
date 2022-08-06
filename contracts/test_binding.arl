@@ -2,6 +2,22 @@ archetype test_binding
 
 variable s : int = 0
 
+variable o : option<nat> = none
+
+variable r : all = {
+  a = 0;
+  b = 0;
+  c = 0tz;
+  d = 0.0;
+  e = false;
+  f = 0x;
+  g = "";
+  h = 2022-08-06;
+  i = 0s;
+  j = tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb;
+  k = none
+}
+
 record all {
   a : nat;
   b : int;
@@ -16,6 +32,8 @@ record all {
   k : option<nat>
 } as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11))))
 
-entry myentry(r : all) {
-  s := r.a + r.b
+entry myentry(arg : all) {
+  s := arg.a + arg.b;
+  o := arg.k;
+  r := arg
 }

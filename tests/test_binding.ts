@@ -1,5 +1,5 @@
-
 import * as ex from "@completium/experiment-ts";
+
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -57,7 +57,7 @@ export const mich_to_all = (v: ex.Micheline): all => {
 };
 */
 export const all_cmp = (a: all, b: all) => {
-    return (a.a.equals(b.a) && a.b.equals(b.b) && a.c == b.c && a.d.equals(b.d) && a.e == b.e && a.f == b.f && a.g == b.g && a.h.toISOString() == b.h.toISOString() && a.i == b.i && a.j == b.j && a.k == b.k);
+    return (a.a.equals(b.a) && a.b.equals(b.b) && a.c.equals(b.c) && a.d.equals(b.d) && a.e == b.e && a.f.equals(b.f) && a.g == b.g && (a.h.getTime() - a.h.getMilliseconds()) == (b.h.getTime() - b.h.getMilliseconds()) && a.i.equals(b.i) && a.j.equals(b.j) && a.k.equals(b.k));
 };
 const myentry_arg_to_mich = (r: all): ex.Micheline => {
     return all_to_mich(r);
@@ -79,7 +79,14 @@ export class Test_binding {
     async get_s(): Promise<ex.Int> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return new ex.Int(storage);
+            return new ex.Int(storage.s);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_r(): Promise<all> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            return { a: new ex.Nat(storage.f1), b: new ex.Int(storage.f2), c: new ex.Tez(storage.f3, "mutez"), d: new ex.Rational(storage.f4[Object.keys(storage.f4)[0]], storage.f4[Object.keys(storage.f4)[1]]), e: storage.f5, f: new ex.Bytes(storage.f6), g: storage.f7, h: new Date(storage.f8), i: new ex.Duration(storage.f9), j: new ex.Address(storage.f10), k: new ex.Option<ex.Nat>(storage.f11 == null ? null : new ex.Nat(storage.f11)) };
         }
         throw new Error("Contract not initialised");
     }
