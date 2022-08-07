@@ -40,6 +40,12 @@ const r_value : all = {
   k : new Option<Nat>(new Nat(4))
 }
 
+const l_value = [ new Int(2), new Int(4), new Int(6) ]
+
+const l1_value = [ r_value, r_value ]
+
+const l2_value = [ l1_value ]
+
 /* Scenario ---------------------------------------------------------------- */
 
 describe('[Test_binding] Contract deployment', async () => {
@@ -52,12 +58,35 @@ describe('[Test_binding] Call entry', async () => {
   it("Call 'myentry'", async () => {
     await test_binding.myentry(r_value, { as : alice })
   })
-  it("Test 's' value", async () => {
+  it("Test 's' int value getter", async () => {
     const s = await test_binding.get_s();
     assert(s.equals(new Int(2)))
   })
-  it("Test 'r' value", async () => {
+  it("Test 'r' value record getter", async () => {
     const r = await test_binding.get_r();
     assert(all_cmp(r_value, r))
+  })
+  it("Test 'l' value list of int getter", async () => {
+    const l = await test_binding.get_l();
+    assert(l.length == l_value.length)
+    for (let i = 0; i < l.length; i++) {
+      assert(l[i].equals(l_value[i]))
+    }
+  })
+  it("Test 'l1' value list of record 'all' getter", async () => {
+    const l1 = await test_binding.get_l1();
+    assert(l1.length == l1_value.length)
+    for (let i = 0; i < l1.length; i++) {
+      assert(all_cmp(l1[i], l1_value[i]))
+    }
+  })
+  it("Test 'l2' value list of list of record 'all' getter", async () => {
+    const l2 = await test_binding.get_l2();
+    assert(l2.length == l2_value.length)
+    for (let j = 0; j < l2.length; j++) {
+      for (let i = 0; i < l2[j].length; i++) {
+        assert(all_cmp(l2[j][i], l2_value[j][i]))
+      }
+    }
   })
 })

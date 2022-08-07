@@ -4,19 +4,7 @@ variable s : int = 0
 
 variable o : option<nat> = none
 
-variable r : all = {
-  a = 0;
-  b = 0;
-  c = 0tz;
-  d = 0.0;
-  e = false;
-  f = 0x;
-  g = "";
-  h = 2022-08-06;
-  i = 0s;
-  j = tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb;
-  k = none
-}
+variable l : list<int> = []
 
 record all {
   a : nat;
@@ -32,8 +20,29 @@ record all {
   k : option<nat>
 } as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11))))
 
+variable l1 : list<all> = []
+
+variable l2 : list<list<all>> = []
+
+variable r : all = {
+  a = 0;
+  b = 0;
+  c = 0tz;
+  d = 0.0;
+  e = false;
+  f = 0x;
+  g = "";
+  h = 2022-08-06;
+  i = 0s;
+  j = tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb;
+  k = none
+}
+
 entry myentry(arg : all) {
   s := arg.a + arg.b;
   o := arg.k;
-  r := arg
+  r := arg;
+  l := [ s; 2*s; 3*s ];
+  l1 := [ arg; arg ];
+  l2 := [l1]
 }

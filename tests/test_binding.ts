@@ -84,14 +84,49 @@ export class Test_binding {
     async get_o(): Promise<ex.Option<ex.Nat>> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return new ex.Option<ex.Nat>(storage.o == null ? null : new ex.Nat(storage.o));
+            return new ex.Option<ex.Nat>(storage.o == null ? null : (x => { return new ex.Nat(x); })(storage.o));
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_l(): Promise<Array<ex.Int>> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            const res: Array<ex.Int> = [];
+            for (let i = 0; i < storage.l.length; i++) {
+                res.push((x => { return new ex.Int(x); })(storage.l[i]));
+            }
+            return res;
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_l1(): Promise<Array<all>> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            const res: Array<all> = [];
+            for (let i = 0; i < storage.l1.length; i++) {
+                res.push((x => { return { a: (x => { return new ex.Nat(x); })(x.f1), b: (x => { return new ex.Int(x); })(x.f2), c: (x => { return new ex.Tez(x, "mutez"); })(x.f3), d: (x => { return new ex.Rational(x[Object.keys(x)[0]], x[Object.keys(x)[1]]); })(x.f4), e: (x => { return x; })(x.f5), f: (x => { return new ex.Bytes(x); })(x.f6), g: (x => { return x; })(x.f7), h: (x => { return new Date(x); })(x.f8), i: (x => { return new ex.Duration(x); })(x.f9), j: (x => { return new ex.Address(x); })(x.f10), k: (x => { return new ex.Option<ex.Nat>(x == null ? null : (x => { return new ex.Nat(x); })(x)); })(x.f11) }; })(storage.l1[i]));
+            }
+            return res;
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_l2(): Promise<Array<Array<all>>> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            const res: Array<Array<all>> = [];
+            for (let i = 0; i < storage.l2.length; i++) {
+                res.push((x => { const res: Array<all> = []; for (let i = 0; i < x.length; i++) {
+                    res.push((x => { return { a: (x => { return new ex.Nat(x); })(x.f1), b: (x => { return new ex.Int(x); })(x.f2), c: (x => { return new ex.Tez(x, "mutez"); })(x.f3), d: (x => { return new ex.Rational(x[Object.keys(x)[0]], x[Object.keys(x)[1]]); })(x.f4), e: (x => { return x; })(x.f5), f: (x => { return new ex.Bytes(x); })(x.f6), g: (x => { return x; })(x.f7), h: (x => { return new Date(x); })(x.f8), i: (x => { return new ex.Duration(x); })(x.f9), j: (x => { return new ex.Address(x); })(x.f10), k: (x => { return new ex.Option<ex.Nat>(x == null ? null : (x => { return new ex.Nat(x); })(x)); })(x.f11) }; })(x[i]));
+                } return res; })(storage.l2[i]));
+            }
+            return res;
         }
         throw new Error("Contract not initialised");
     }
     async get_r(): Promise<all> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return { a: new ex.Nat(storage.f1), b: new ex.Int(storage.f2), c: new ex.Tez(storage.f3, "mutez"), d: new ex.Rational(storage.f4[Object.keys(storage.f4)[0]], storage.f4[Object.keys(storage.f4)[1]]), e: storage.f5, f: new ex.Bytes(storage.f6), g: storage.f7, h: new Date(storage.f8), i: new ex.Duration(storage.f9), j: new ex.Address(storage.f10), k: new ex.Option<ex.Nat>(storage.f11 == null ? null : new ex.Nat(storage.f11)) };
+            return { a: (x => { return new ex.Nat(x); })(storage.f1), b: (x => { return new ex.Int(x); })(storage.f2), c: (x => { return new ex.Tez(x, "mutez"); })(storage.f3), d: (x => { return new ex.Rational(x[Object.keys(x)[0]], x[Object.keys(x)[1]]); })(storage.f4), e: (x => { return x; })(storage.f5), f: (x => { return new ex.Bytes(x); })(storage.f6), g: (x => { return x; })(storage.f7), h: (x => { return new Date(x); })(storage.f8), i: (x => { return new ex.Duration(x); })(storage.f9), j: (x => { return new ex.Address(x); })(storage.f10), k: (x => { return new ex.Option<ex.Nat>(x == null ? null : (x => { return new ex.Nat(x); })(x)); })(storage.f11) };
         }
         throw new Error("Contract not initialised");
     }
