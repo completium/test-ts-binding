@@ -1,5 +1,5 @@
-import * as ex from "@completium/experiment-ts";
 
+import * as ex from "@completium/experiment-ts";
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -50,17 +50,15 @@ export const all_mich_type: ex.MichelineType = ex.pair_array_to_mich_type([
         ])
     ])
 ]);
-/*
 export const mich_to_all = (v: ex.Micheline): all => {
-    const fields = ex.mich_to_pairs(v);
-    return { a: ex.mich_to_nat(fields[0]), b: ex.mich_to_int(fields[1]), c: ex.mich_to_string(fields[2]), d: ex.mich_to_string(fields[3]), e: ex.mich_to_string(fields[4]), f: ex.mich_to_string(fields[5]), g: ex.mich_to_string(fields[6]), h: ex.mich_to_date(fields[7]), i: ex.mich_to_string(fields[8]), j: ex.mich_to_string(fields[9]), k: ex.mich_to_string(fields[10]) };
+    const fields = ex.annotated_mich_to_array(v, all_mich_type);
+    return { a: ex.mich_to_nat(fields[0]), b: ex.mich_to_int(fields[1]), c: ex.mich_to_tez(fields[2]), d: ex.mich_to_rational(fields[3]), e: ex.mich_to_bool(fields[4]), f: ex.mich_to_bytes(fields[5]), g: ex.mich_to_string(fields[6]), h: ex.mich_to_date(fields[7]), i: ex.mich_to_duration(fields[8]), j: ex.mich_to_address(fields[9]), k: ex.mich_to_option(fields[10], x => { return ex.mich_to_nat(x); }) };
 };
-*/
 export const all_cmp = (a: all, b: all) => {
     return (a.a.equals(b.a) && a.b.equals(b.b) && a.c.equals(b.c) && a.d.equals(b.d) && a.e == b.e && a.f.equals(b.f) && a.g == b.g && (a.h.getTime() - a.h.getMilliseconds()) == (b.h.getTime() - b.h.getMilliseconds()) && a.i.equals(b.i) && a.j.equals(b.j) && a.k.equals(b.k));
 };
-const myentry_arg_to_mich = (r: all): ex.Micheline => {
-    return all_to_mich(r);
+const myentry_arg_to_mich = (arg: all): ex.Micheline => {
+    return all_to_mich(arg);
 }
 export class Test_binding {
     address: string | undefined;
@@ -71,15 +69,22 @@ export class Test_binding {
         const address = await ex.deploy("./contracts/test_binding.arl", {}, params);
         this.address = address;
     }
-    async myentry(r: all, params: Partial<ex.Parameters>): Promise<any> {
+    async myentry(arg: all, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
-            await ex.call(this.address, "myentry", myentry_arg_to_mich(r), params);
+            await ex.call(this.address, "myentry", myentry_arg_to_mich(arg), params);
         }
     }
     async get_s(): Promise<ex.Int> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
             return new ex.Int(storage.s);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_o(): Promise<ex.Option<ex.Nat>> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            return new ex.Option<ex.Nat>(storage.o == null ? null : new ex.Nat(storage.o));
         }
         throw new Error("Contract not initialised");
     }
