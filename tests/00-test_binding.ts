@@ -48,6 +48,8 @@ const l2_value = [ l1_value ]
 
 const m_value : Array<[ Nat, [ string, Int ] ]> = [ [ new Nat(3), [ "test", new Int(5) ] ] ]
 
+const s1_value = [ new Nat(3), new Nat(4), new Nat(5) ]
+
 /* Scenario ---------------------------------------------------------------- */
 
 describe('[Test_binding] Contract deployment', async () => {
@@ -98,6 +100,13 @@ describe('[Test_binding] Call entry', async () => {
       assert(m[i][0].equals(m_value[i][0]))
       assert(m[i][1][0] == m_value[i][1][0])
       assert(m[i][1][1].equals(m_value[i][1][1]))
+    }
+  })
+  it("Test 's1' value set of nat getter", async () => {
+    const s1 = await test_binding.get_s1()
+    assert(s1.length == s1_value.length)
+    for (let i = 0; i < s1.length; i++) {
+      assert(s1[i].equals(s1_value[i]))
     }
   })
 })
