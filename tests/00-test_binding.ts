@@ -46,6 +46,8 @@ const l1_value = [ r_value, r_value ]
 
 const l2_value = [ l1_value ]
 
+const m_value : Array<[ Nat, [ string, Int ] ]> = [ [ new Nat(3), [ "test", new Int(5) ] ] ]
+
 /* Scenario ---------------------------------------------------------------- */
 
 describe('[Test_binding] Contract deployment', async () => {
@@ -87,6 +89,15 @@ describe('[Test_binding] Call entry', async () => {
       for (let i = 0; i < l2[j].length; i++) {
         assert(all_cmp(l2[j][i], l2_value[j][i]))
       }
+    }
+  })
+  it("Test 'm' value map of nat to pair of string int getter", async () => {
+    const m = await test_binding.get_m();
+    assert(m.length == m_value.length)
+    for (let i = 0; i < m.length; i++) {
+      assert(m[i][0].equals(m_value[i][0]))
+      assert(m[i][1][0] == m_value[i][1][0])
+      assert(m[i][1][1].equals(m_value[i][1][1]))
     }
   })
 })

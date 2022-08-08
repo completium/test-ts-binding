@@ -99,6 +99,29 @@ export class Test_binding {
         }
         throw new Error("Contract not initialised");
     }
+    async get_m(): Promise<Array<[
+        ex.Nat,
+        [
+            string,
+            ex.Int
+        ]
+    ]>> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            let res: Array<[
+                ex.Nat,
+                [
+                    string,
+                    ex.Int
+                ]
+            ]> = [];
+            for (let e of storage.m.entries()) {
+                res.push([(x => { return new ex.Nat(x); })(e[0]), (x => { return [(x => { return x; })(x[0]), (x => { return new ex.Int(x); })(x[1])]; })(e[1])]);
+            }
+            return res;
+        }
+        throw new Error("Contract not initialised");
+    }
     async get_l1(): Promise<Array<all>> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
