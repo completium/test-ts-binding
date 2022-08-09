@@ -50,6 +50,8 @@ const m_value : Array<[ Nat, [ string, Int ] ]> = [ [ new Nat(3), [ "test", new 
 
 const s1_value = [ new Nat(3), new Nat(4), new Nat(5) ]
 
+const visitors_value : Array<[ Address, Nat ]> = [ [ new Address(alice.pkh), new Nat(1) ] ]
+
 /* Scenario ---------------------------------------------------------------- */
 
 describe('[Test_binding] Contract deployment', async () => {
@@ -107,6 +109,14 @@ describe('[Test_binding] Call entry', async () => {
     assert(s1.length == s1_value.length)
     for (let i = 0; i < s1.length; i++) {
       assert(s1[i].equals(s1_value[i]))
+    }
+  })
+  it("Test 'visitor' one field asset value getter", async () => {
+    const v = await test_binding.get_visitor()
+    assert(v.length == visitors_value.length)
+    for (let i = 0; i < v.length; i++) {
+      assert(v[i][0].equals(visitors_value[i][0]))
+      assert(v[i][1].equals(visitors_value[i][1]))
     }
   })
 })

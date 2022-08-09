@@ -195,6 +195,14 @@ export class Test_binding {
     async get_visitor(): Promise<visitor_container> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
+            let res: Array<[
+                ex.Address,
+                ex.Nat
+            ]> = [];
+            for (let e of storage.visitor.entries()) {
+                res.push([(x => { return new ex.Address(x); })(e[0]), (x => { return new ex.Nat(x); })(e[1])]);
+            }
+            return res;
         }
         throw new Error("Contract not initialised");
     }
