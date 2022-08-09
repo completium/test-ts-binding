@@ -42,6 +42,10 @@ variable r : all = {
   k = none
 }
 
+asset just_a_key {
+  key_id : address
+}
+
 asset visitor {
   id : address;
   nb_visits : nat = 0
@@ -65,5 +69,6 @@ entry myentry(arg : all) {
   s1.add(4);
   s1.add(5);
   visitor.add_update(caller, { nb_visits += 1 });
-  visitor_2.add_update(caller, { nb_visits2 += 1; last := arg.h })
+  visitor_2.add_update(caller, { nb_visits2 += 1; last := arg.h });
+  just_a_key.add({ caller })
 }

@@ -63,6 +63,8 @@ const visitor_2_value : visitor_2_value = {
 
 const visitor_2_container : visitor_2_container = [ [ new Address(alice.pkh), visitor_2_value ] ]
 
+const just_a_key_container : Address[] = [ new Address(alice.pkh) ]
+
 /* Scenario ---------------------------------------------------------------- */
 
 describe('[Test_binding] Contract deployment', async () => {
@@ -136,6 +138,13 @@ describe('[Test_binding] Call entry', async () => {
     for (let i = 0; i < v.length; i++) {
       assert(v[i][0].equals(visitor_2_container[i][0]))
       assert(visitor_2_value_cmp(v[i][1], visitor_2_value))
+    }
+  })
+  it("Test 'just_a_key' one key field asset getter", async () => {
+    const v = await test_binding.get_just_a_key()
+    assert(v.length == just_a_key_container.length)
+    for (let i = 0; i < v.length; i++) {
+      assert(v[i].equals(just_a_key_container[i]))
     }
   })
 })
