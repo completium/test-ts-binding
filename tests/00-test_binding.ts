@@ -41,7 +41,8 @@ const r_value : all = {
   h : new Date(),
   i : new Duration(""),
   j : new Address(alice.pkh),
-  k : new Option<Nat>(new Nat(4))
+  k : new Option<Nat>(new Nat(4)),
+  n : [ "an element" ]
 }
 
 const l_value = [ new Int(2), new Int(4), new Int(6) ]

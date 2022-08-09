@@ -21,8 +21,9 @@ record all {
   h : date;
   i : duration;
   j : address;
-  k : option<nat>
-} as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11))))
+  k : option<nat>;
+  n : list<string>
+} as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11, f12))))
 
 variable l1 : list<all> = []
 
@@ -39,7 +40,8 @@ variable r : all = {
   h = 2022-08-06;
   i = 0s;
   j = tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb;
-  k = none
+  k = none;
+  n = []
 }
 
 asset just_a_key {
