@@ -1,5 +1,5 @@
-import * as ex from "@completium/experiment-ts";
 
+import * as ex from "@completium/experiment-ts";
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -58,24 +58,51 @@ export const all_cmp = (a: all, b: all) => {
     return (a.a.equals(b.a) && a.b.equals(b.b) && a.c.equals(b.c) && a.d.equals(b.d) && a.e == b.e && a.f.equals(b.f) && a.g == b.g && (a.h.getTime() - a.h.getMilliseconds()) == (b.h.getTime() - b.h.getMilliseconds()) && a.i.equals(b.i) && a.j.equals(b.j) && a.k.equals(b.k));
 };
 export type visitor_key = ex.Address;
+export type visitor_2_key = ex.Address;
 export const visitor_key_to_mich = (x: visitor_key): ex.Micheline => {
     return x.to_mich();
 };
+export const visitor_2_key_to_mich = (x: visitor_2_key): ex.Micheline => {
+    return x.to_mich();
+};
 export const visitor_key_mich_type: ex.MichelineType = ex.prim_annot_to_mich_type("address", []);
+export const visitor_2_key_mich_type: ex.MichelineType = ex.prim_annot_to_mich_type("address", []);
 export type visitor_value = ex.Nat;
+export interface visitor_2_value {
+    nb_visits2: ex.Nat;
+    last: Date;
+}
 export const visitor_value_to_mich = (x: visitor_value): ex.Micheline => {
     return x.to_mich();
 };
+export const visitor_2_value_to_mich = (x: visitor_2_value): ex.Micheline => {
+    return ex.pair_to_mich([x.nb_visits2.to_mich(), ex.date_to_mich(x.last)]);
+};
 export const visitor_value_mich_type: ex.MichelineType = ex.prim_annot_to_mich_type("nat", []);
+export const visitor_2_value_mich_type: ex.MichelineType = ex.pair_array_to_mich_type([
+    ex.prim_annot_to_mich_type("nat", ["%nb_visits2"]),
+    ex.prim_annot_to_mich_type("timestamp", ["%last"])
+]);
 export const mich_to_visitor_value = (v: ex.Micheline): visitor_value => {
     return ex.mich_to_nat(v);
+};
+export const mich_to_visitor_2_value = (v: ex.Micheline): visitor_2_value => {
+    const fields = ex.annotated_mich_to_array(v, visitor_2_value_mich_type);
+    return { nb_visits2: ex.mich_to_nat(fields[0]), last: ex.mich_to_date(fields[1]) };
 };
 export const visitor_value_cmp = (a: visitor_value, b: visitor_value) => {
     return a.equals(b);
 };
+export const visitor_2_value_cmp = (a: visitor_2_value, b: visitor_2_value) => {
+    return (a.nb_visits2.equals(b.nb_visits2) && (a.last.getTime() - a.last.getMilliseconds()) == (b.last.getTime() - b.last.getMilliseconds()));
+};
 export type visitor_container = Array<[
     visitor_key,
     visitor_value
+]>;
+export type visitor_2_container = Array<[
+    visitor_2_key,
+    visitor_2_value
 ]>;
 export const visitor_container_to_mich = (x: visitor_container): ex.Micheline => {
     return ex.list_to_mich(x, x => {
@@ -84,7 +111,18 @@ export const visitor_container_to_mich = (x: visitor_container): ex.Micheline =>
         return ex.elt_to_mich(x_key.to_mich(), x_value.to_mich());
     });
 };
+export const visitor_2_container_to_mich = (x: visitor_2_container): ex.Micheline => {
+    return ex.list_to_mich(x, x => {
+        const x_key = x[0];
+        const x_value = x[1];
+        return ex.elt_to_mich(x_key.to_mich(), ex.pair_to_mich([x_value.nb_visits2.to_mich(), ex.date_to_mich(x_value.last)]));
+    });
+};
 export const visitor_container_mich_type: ex.MichelineType = ex.pair_to_mich_type("map", ex.prim_annot_to_mich_type("address", []), ex.prim_annot_to_mich_type("nat", []));
+export const visitor_2_container_mich_type: ex.MichelineType = ex.pair_to_mich_type("map", ex.prim_annot_to_mich_type("address", []), ex.pair_array_to_mich_type([
+    ex.prim_annot_to_mich_type("nat", ["%nb_visits2"]),
+    ex.prim_annot_to_mich_type("timestamp", ["%last"])
+]));
 const myentry_arg_to_mich = (arg: all): ex.Micheline => {
     return all_to_mich(arg);
 }
@@ -201,6 +239,20 @@ export class Test_binding {
             ]> = [];
             for (let e of storage.visitor.entries()) {
                 res.push([(x => { return new ex.Address(x); })(e[0]), (x => { return new ex.Nat(x); })(e[1])]);
+            }
+            return res;
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_visitor_2(): Promise<visitor_2_container> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            let res: Array<[
+                ex.Address,
+                visitor_2_value
+            ]> = [];
+            for (let e of storage.visitor_2.entries()) {
+                res.push([(x => { return new ex.Address(x); })(e[0]), (x => { return { nb_visits2: (x => { return new ex.Nat(x); })(x.nb_visits2), last: (x => { return new Date(x); })(x.last) }; })(e[1])]);
             }
             return res;
         }

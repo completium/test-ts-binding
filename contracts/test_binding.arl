@@ -47,6 +47,12 @@ asset visitor {
   nb_visits : nat = 0
 }
 
+asset visitor_2 {
+  id2 : address;
+  nb_visits2 : nat = 0;
+  last : date = now
+}
+
 entry myentry(arg : all) {
   s := arg.a + arg.b;
   o := arg.k;
@@ -58,5 +64,6 @@ entry myentry(arg : all) {
   s1.add(3);
   s1.add(4);
   s1.add(5);
-  visitor.add_update(caller, { nb_visits += 1 })
+  visitor.add_update(caller, { nb_visits += 1 });
+  visitor_2.add_update(caller, { nb_visits2 += 1; last := arg.h })
 }

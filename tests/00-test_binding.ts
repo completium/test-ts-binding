@@ -5,7 +5,11 @@ const assert = require('assert')
 import {
   test_binding,
   all_cmp,
-  all
+  all,
+  visitor_2_value_cmp,
+  visitor_2_container,
+  mich_to_visitor_2_value,
+  visitor_2_value
 } from './test_binding'
 
 /* Accounts ---------------------------------------------------------------- */
@@ -50,7 +54,14 @@ const m_value : Array<[ Nat, [ string, Int ] ]> = [ [ new Nat(3), [ "test", new 
 
 const s1_value = [ new Nat(3), new Nat(4), new Nat(5) ]
 
-const visitors_value : Array<[ Address, Nat ]> = [ [ new Address(alice.pkh), new Nat(1) ] ]
+const visitor_value : Array<[ Address, Nat ]> = [ [ new Address(alice.pkh), new Nat(1) ] ]
+
+const visitor_2_value : visitor_2_value = {
+  nb_visits2 : new Nat(1),
+  last : new Date()
+}
+
+const visitor_2_container : visitor_2_container = [ [ new Address(alice.pkh), visitor_2_value ] ]
 
 /* Scenario ---------------------------------------------------------------- */
 
@@ -113,10 +124,18 @@ describe('[Test_binding] Call entry', async () => {
   })
   it("Test 'visitor' one field asset value getter", async () => {
     const v = await test_binding.get_visitor()
-    assert(v.length == visitors_value.length)
+    assert(v.length == visitor_value.length)
     for (let i = 0; i < v.length; i++) {
-      assert(v[i][0].equals(visitors_value[i][0]))
-      assert(v[i][1].equals(visitors_value[i][1]))
+      assert(v[i][0].equals(visitor_value[i][0]))
+      assert(v[i][1].equals(visitor_value[i][1]))
+    }
+  })
+  it("Test 'visitor2' several fields asset value getter", async () => {
+    const v = await test_binding.get_visitor_2()
+    assert(v.length == visitor_2_container.length)
+    for (let i = 0; i < v.length; i++) {
+      assert(v[i][0].equals(visitor_2_container[i][0]))
+      assert(visitor_2_value_cmp(v[i][1], visitor_2_value))
     }
   })
 })
