@@ -1,5 +1,5 @@
-
 import * as ex from "@completium/experiment-ts";
+
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -57,6 +57,34 @@ export const mich_to_all = (v: ex.Micheline): all => {
 export const all_cmp = (a: all, b: all) => {
     return (a.a.equals(b.a) && a.b.equals(b.b) && a.c.equals(b.c) && a.d.equals(b.d) && a.e == b.e && a.f.equals(b.f) && a.g == b.g && (a.h.getTime() - a.h.getMilliseconds()) == (b.h.getTime() - b.h.getMilliseconds()) && a.i.equals(b.i) && a.j.equals(b.j) && a.k.equals(b.k));
 };
+export type visitor_key = ex.Address;
+export const visitor_key_to_mich = (x: visitor_key): ex.Micheline => {
+    return x.to_mich();
+};
+export const visitor_key_mich_type: ex.MichelineType = ex.prim_annot_to_mich_type("address", []);
+export type visitor_value = ex.Nat;
+export const visitor_value_to_mich = (x: visitor_value): ex.Micheline => {
+    return x.to_mich();
+};
+export const visitor_value_mich_type: ex.MichelineType = ex.prim_annot_to_mich_type("nat", []);
+export const mich_to_visitor_value = (v: ex.Micheline): visitor_value => {
+    return ex.mich_to_nat(v);
+};
+export const visitor_value_cmp = (a: visitor_value, b: visitor_value) => {
+    return a.equals(b);
+};
+export type visitor_container = Array<[
+    visitor_key,
+    visitor_value
+]>;
+export const visitor_container_to_mich = (x: visitor_container): ex.Micheline => {
+    return ex.list_to_mich(x, x => {
+        const x_key = x[0];
+        const x_value = x[1];
+        return ex.elt_to_mich(x_key.to_mich(), x_value.to_mich());
+    });
+};
+export const visitor_container_mich_type: ex.MichelineType = ex.pair_to_mich_type("map", ex.prim_annot_to_mich_type("address", []), ex.prim_annot_to_mich_type("nat", []));
 const myentry_arg_to_mich = (arg: all): ex.Micheline => {
     return all_to_mich(arg);
 }
@@ -161,6 +189,12 @@ export class Test_binding {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
             return { a: (x => { return new ex.Nat(x); })(storage.f1), b: (x => { return new ex.Int(x); })(storage.f2), c: (x => { return new ex.Tez(x, "mutez"); })(storage.f3), d: (x => { return new ex.Rational(x[Object.keys(x)[0]], x[Object.keys(x)[1]]); })(storage.f4), e: (x => { return x; })(storage.f5), f: (x => { return new ex.Bytes(x); })(storage.f6), g: (x => { return x; })(storage.f7), h: (x => { return new Date(x); })(storage.f8), i: (x => { return new ex.Duration(x); })(storage.f9), j: (x => { return new ex.Address(x); })(storage.f10), k: (x => { return new ex.Option<ex.Nat>(x == null ? null : (x => { return new ex.Nat(x); })(x)); })(storage.f11) };
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_visitor(): Promise<visitor_container> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
         }
         throw new Error("Contract not initialised");
     }

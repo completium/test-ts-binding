@@ -42,6 +42,11 @@ variable r : all = {
   k = none
 }
 
+asset visitor {
+  id : address;
+  nb_visits : nat = 0
+}
+
 entry myentry(arg : all) {
   s := arg.a + arg.b;
   o := arg.k;
@@ -52,5 +57,6 @@ entry myentry(arg : all) {
   m.put(3, ("test", 5i));
   s1.add(3);
   s1.add(4);
-  s1.add(5)
+  s1.add(5);
+  visitor.add_update(caller, { nb_visits += 1 })
 }
