@@ -22,8 +22,9 @@ record all {
   i : duration;
   j : address;
   k : option<nat>;
-  n : list<string>
-} as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11, f12))))
+  n : list<string>;
+  p : set<string * nat * int>
+} as (((f1, f2, f3),((f4, f5), (f6, f7, f8, f9, f10, f11, f12, f13))))
 
 variable l1 : list<all> = []
 
@@ -41,7 +42,8 @@ variable r : all = {
   i = 0s;
   j = tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb;
   k = none;
-  n = []
+  n = [];
+  p = []
 }
 
 asset just_a_key {
@@ -72,5 +74,5 @@ entry myentry(arg : all) {
   s1.add(5);
   visitor.add_update(caller, { nb_visits += 1 });
   visitor_2.add_update(caller, { nb_visits2 += 1; last := arg.h });
-  just_a_key.add({ caller })
+  just_a_key.add({ caller });
 }

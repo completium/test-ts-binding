@@ -42,7 +42,10 @@ const r_value : all = {
   i : new Duration(""),
   j : new Address(alice.pkh),
   k : new Option<Nat>(new Nat(4)),
-  n : [ "an element" ]
+  n : [ "an list element" ],
+  p : [ ["a tuple set element", new Nat(7), new Int(9) ],
+        ["another tuple set element", new Nat(8), new Int(10)]
+      ]
 }
 
 const l_value = [ new Int(2), new Int(4), new Int(6) ]
