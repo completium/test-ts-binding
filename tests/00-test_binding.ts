@@ -8,7 +8,6 @@ import {
   all,
   visitor_2_value_cmp,
   visitor_2_container,
-  mich_to_visitor_2_value,
   visitor_2_value
 } from './test_binding'
 
