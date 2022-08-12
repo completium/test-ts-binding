@@ -1,4 +1,4 @@
-archetype test_binding
+archetype test_binding(owner : address)
 
 variable s : int = 0
 
@@ -78,7 +78,7 @@ entry myentry(arg : all) {
 }
 
 entry myentry2(arg : nat * string) {
-  called by tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb
+  called by owner
   effect {
     const x = arg[0];
     if x > 10 then

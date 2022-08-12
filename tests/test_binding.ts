@@ -1,5 +1,5 @@
-
 import * as ex from "@completium/experiment-ts";
+
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -175,13 +175,17 @@ export class Test_binding {
     get_address(): string | undefined {
         return this.address;
     }
-    async deploy(params: Partial<ex.Parameters>) {
-        const address = await ex.deploy("./contracts/test_binding.arl", {}, params);
+    async deploy(owner: ex.Address, params: Partial<ex.Parameters>) {
+        const address = await ex.deploy("./contracts/test_binding.arl", {
+            owner: owner.toString()
+        }, params);
         this.address = address;
     }
     async myentry(arg: all, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
             await ex.call(this.address, "myentry", myentry_arg_to_mich(arg), params);
+        } else {
+            throw new Error("Contract not initialised");
         }
     }
     async myentry2(arg: [
@@ -190,6 +194,8 @@ export class Test_binding {
     ], params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
             await ex.call(this.address, "myentry2", myentry2_arg_to_mich(arg), params);
+        } else {
+            throw new Error("Contract not initialised");
         }
     }
     async get_s(): Promise<ex.Int> {

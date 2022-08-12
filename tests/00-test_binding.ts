@@ -74,7 +74,7 @@ const just_a_key_container : Address[] = [ new Address(alice.pkh) ]
 
 describe('[Test_binding] Contract deployment', async () => {
   it('Deploy test_binding', async () => {
-    await test_binding.deploy({ as: alice })
+    await test_binding.deploy(new Address(alice.pkh), { as: alice })
   });
 })
 

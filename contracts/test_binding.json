@@ -1,6 +1,17 @@
 {
   "name": "test_binding",
-  "parameters": [],
+  "parameters": [
+    {
+      "name": "owner",
+      "type": {
+        "node": "address",
+        "name": null,
+        "args": []
+      },
+      "const": false,
+      "default": null
+    }
+  ],
   "types": {
     "assets": [
       {
