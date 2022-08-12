@@ -74,7 +74,7 @@ const just_a_key_container : Address[] = [ new Address(alice.pkh) ]
 
 describe('[Test_binding] Contract deployment', async () => {
   it('Deploy test_binding', async () => {
-    await test_binding.deploy(new Address(alice.pkh), { as: alice })
+    await test_binding.deploy(new Address(alice.pkh), new Option<Address>(new Address(alice.pkh)), { as: alice })
   });
 })
 
@@ -153,13 +153,13 @@ describe('[Test_binding] Call entry', async () => {
     }
   })
   it("Call to entry 2 should fail with INVALID_CALLER", async () => {
-    expect_to_fail(async () => {
-      test_binding.myentry2([ new Nat(0), "an argument" ], { as : bob })
+    await expect_to_fail(async () => {
+      await test_binding.myentry2([ new Nat(0), "an argument" ], { as : bob })
     }, test_binding.errors.INVALID_CALLER)
   })
   it("Call to entry 2 should fail with NOT_TO_BE_CALLED", async () => {
-    expect_to_fail(async () => {
-      test_binding.myentry2([ new Nat(20), "an argument" ], { as : alice })
+    await expect_to_fail(async () => {
+      await test_binding.myentry2([ new Nat(20), "an argument" ], { as : alice })
     }, test_binding.errors.NOT_TO_BE_CALLED)
   })
 })

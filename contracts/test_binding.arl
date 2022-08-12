@@ -1,4 +1,4 @@
-archetype test_binding(owner : address)
+archetype test_binding(owner : address, oa : option<address>)
 
 variable s : int = 0
 

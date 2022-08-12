@@ -1,5 +1,5 @@
-import * as ex from "@completium/experiment-ts";
 
+import * as ex from "@completium/experiment-ts";
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -175,17 +175,16 @@ export class Test_binding {
     get_address(): string | undefined {
         return this.address;
     }
-    async deploy(owner: ex.Address, params: Partial<ex.Parameters>) {
+    async deploy(owner: ex.Address, oa: ex.Option<ex.Address>, params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/test_binding.arl", {
-            owner: owner.toString()
+            owner: owner.toString(),
+            oa: oa.is_some() ? oa.get().toString() : null
         }, params);
         this.address = address;
     }
     async myentry(arg: all, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
             await ex.call(this.address, "myentry", myentry_arg_to_mich(arg), params);
-        } else {
-            throw new Error("Contract not initialised");
         }
     }
     async myentry2(arg: [
@@ -194,8 +193,6 @@ export class Test_binding {
     ], params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
             await ex.call(this.address, "myentry2", myentry2_arg_to_mich(arg), params);
-        } else {
-            throw new Error("Contract not initialised");
         }
     }
     async get_s(): Promise<ex.Int> {
@@ -300,15 +297,15 @@ export class Test_binding {
     async get_r(): Promise<all> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return { a: (x => { return new ex.Nat(x); })(storage.f1), b: (x => { return new ex.Int(x); })(storage.f2), c: (x => { return new ex.Tez(x, "mutez"); })(storage.f3), d: (x => { return new ex.Rational(x[Object.keys(x)[0]], x[Object.keys(x)[1]]); })(storage.f4), e: (x => { return x; })(storage.f5), f: (x => { return new ex.Bytes(x); })(storage.f6), g: (x => { return x; })(storage.f7), h: (x => { return new Date(x); })(storage.f8), i: (x => { return new ex.Duration(x); })(storage.f9), j: (x => { return new ex.Address(x); })(storage.f10), k: (x => { return new ex.Option<ex.Nat>(x == null ? null : (x => { return new ex.Nat(x); })(x)); })(storage.f11), n: (x => { const res: Array<string> = []; for (let i = 0; i < x.length; i++) {
+            return { a: (x => { return new ex.Nat(x); })(storage.r.f1), b: (x => { return new ex.Int(x); })(storage.r.f2), c: (x => { return new ex.Tez(x, "mutez"); })(storage.r.f3), d: (x => { return new ex.Rational(x[Object.keys(x)[0]], x[Object.keys(x)[1]]); })(storage.r.f4), e: (x => { return x; })(storage.r.f5), f: (x => { return new ex.Bytes(x); })(storage.r.f6), g: (x => { return x; })(storage.r.f7), h: (x => { return new Date(x); })(storage.r.f8), i: (x => { return new ex.Duration(x); })(storage.r.f9), j: (x => { return new ex.Address(x); })(storage.r.f10), k: (x => { return new ex.Option<ex.Nat>(x == null ? null : (x => { return new ex.Nat(x); })(x)); })(storage.r.f11), n: (x => { const res: Array<string> = []; for (let i = 0; i < x.length; i++) {
                     res.push((x => { return x; })(x[i]));
-                } return res; })(storage.f12), p: (x => { const res: Array<[
+                } return res; })(storage.r.f12), p: (x => { const res: Array<[
                     string,
                     ex.Nat,
                     ex.Int
                 ]> = []; for (let i = 0; i < x.length; i++) {
                     res.push((x => { return [(x => { return x; })(x[0]), (x => { return new ex.Nat(x); })(x[1]), (x => { return new ex.Int(x); })(x[2])]; })(x[i]));
-                } return res; })(storage.f13) };
+                } return res; })(storage.r.f13) };
         }
         throw new Error("Contract not initialised");
     }
@@ -352,8 +349,8 @@ export class Test_binding {
         throw new Error("Contract not initialised");
     }
     errors = {
-        NOT_TO_BE_CALLED: ex.string_to_mich("NOT_TO_BE_CALLED"),
-        INVALID_CALLER: ex.string_to_mich("INVALID_CALLER"),
+        NOT_TO_BE_CALLED: ex.string_to_mich("\"NOT_TO_BE_CALLED\""),
+        INVALID_CALLER: ex.string_to_mich("\"INVALID_CALLER\""),
         KEY_EXISTS_JUST_A_KEY: ex.pair_to_mich([ex.string_to_mich("KEY_EXISTS"), ex.string_to_mich("just_a_key")])
     };
 }
