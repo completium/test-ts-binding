@@ -1,4 +1,4 @@
-import { Address, Bytes, Duration, get_account, Int, Nat, Option, Rational, set_mockup, set_mockup_now, set_quiet, Tez } from '@completium/experiment-ts'
+import { Address, Bytes, Duration, expect_to_fail, get_account, Int, Nat, Option, Rational, set_mockup, set_mockup_now, set_quiet, Tez } from '@completium/experiment-ts'
 
 const assert = require('assert')
 
@@ -15,6 +15,7 @@ import {
 /* Accounts ---------------------------------------------------------------- */
 
 const alice = get_account('alice');
+const bob   = get_account('bob')
 
 /* Endpoint ---------------------------------------------------------------- */
 
@@ -150,5 +151,15 @@ describe('[Test_binding] Call entry', async () => {
     for (let i = 0; i < v.length; i++) {
       assert(v[i].equals(just_a_key_container[i]))
     }
+  })
+  it("Call to entry 2 should fail with INVALID_CALLER", async () => {
+    expect_to_fail(async () => {
+      test_binding.myentry2([ new Nat(0), "an argument" ], { as : bob })
+    }, test_binding.errors.INVALID_CALLER)
+  })
+  it("Call to entry 2 should fail with NOT_TO_BE_CALLED", async () => {
+    expect_to_fail(async () => {
+      test_binding.myentry2([ new Nat(20), "an argument" ], { as : alice })
+    }, test_binding.errors.NOT_TO_BE_CALLED)
   })
 })

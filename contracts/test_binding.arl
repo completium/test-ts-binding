@@ -76,3 +76,12 @@ entry myentry(arg : all) {
   visitor_2.add_update(caller, { nb_visits2 += 1; last := arg.h });
   just_a_key.add({ caller });
 }
+
+entry myentry2(arg : nat * string) {
+  called by tz1VSUr8wwNhLAzempoch5d6hLRiTh8Cjcjb
+  effect {
+    const x = arg[0];
+    if x > 10 then
+    fail("NOT_TO_BE_CALLED")
+  }
+}

@@ -164,6 +164,12 @@ export const visitor_2_container_mich_type: ex.MichelineType = ex.pair_to_mich_t
 const myentry_arg_to_mich = (arg: all): ex.Micheline => {
     return all_to_mich(arg);
 }
+const myentry2_arg_to_mich = (arg: [
+    ex.Nat,
+    string
+]): ex.Micheline => {
+    return ex.pair_to_mich([arg[0].to_mich(), ex.string_to_mich(arg[1])]);
+}
 export class Test_binding {
     address: string | undefined;
     get_address(): string | undefined {
@@ -176,6 +182,14 @@ export class Test_binding {
     async myentry(arg: all, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
             await ex.call(this.address, "myentry", myentry_arg_to_mich(arg), params);
+        }
+    }
+    async myentry2(arg: [
+        ex.Nat,
+        string
+    ], params: Partial<ex.Parameters>): Promise<any> {
+        if (this.address != undefined) {
+            await ex.call(this.address, "myentry2", myentry2_arg_to_mich(arg), params);
         }
     }
     async get_s(): Promise<ex.Int> {
@@ -331,6 +345,10 @@ export class Test_binding {
         }
         throw new Error("Contract not initialised");
     }
-    errors = {};
+    errors = {
+        NOT_TO_BE_CALLED: ex.string_to_mich("NOT_TO_BE_CALLED"),
+        INVALID_CALLER: ex.string_to_mich("INVALID_CALLER"),
+        KEY_EXISTS_JUST_A_KEY: ex.pair_to_mich([ex.string_to_mich("KEY_EXISTS"), ex.string_to_mich("just_a_key")])
+    };
 }
 export const test_binding = new Test_binding();
