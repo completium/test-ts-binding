@@ -9,7 +9,10 @@ import {
   visitor_2_value_cmp,
   visitor_2_container,
   visitor_2_value
-} from './test_binding'
+} from './binding/test_binding'
+
+import { counter } from './binding/counter'
+
 
 /* Accounts ---------------------------------------------------------------- */
 
@@ -71,13 +74,13 @@ const just_a_key_container : Address[] = [ new Address(alice.pkh) ]
 
 /* Scenario ---------------------------------------------------------------- */
 
-describe('[Test_binding] Contract deployment', async () => {
+describe('[TEST_BINDING] Contract deployment', async () => {
   it('Deploy test_binding', async () => {
     await test_binding.deploy(new Address(alice.pkh), new Option<Address>(new Address(alice.pkh)), { as: alice })
   });
 })
 
-describe('[Test_binding] Call entry', async () => {
+describe('[TEST_BINDING] Call entry', async () => {
   it("Call 'myentry'", async () => {
     await test_binding.myentry(r_value, { as : alice })
   })

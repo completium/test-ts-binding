@@ -1,4 +1,3 @@
-
 import * as ex from "@completium/experiment-ts";
 export interface all {
     a: ex.Nat;
@@ -351,7 +350,7 @@ export class Test_binding {
     errors = {
         NOT_TO_BE_CALLED: ex.string_to_mich("\"NOT_TO_BE_CALLED\""),
         INVALID_CALLER: ex.string_to_mich("\"INVALID_CALLER\""),
-        KEY_EXISTS_JUST_A_KEY: ex.pair_to_mich([ex.string_to_mich("KEY_EXISTS"), ex.string_to_mich("just_a_key")])
+        KEY_EXISTS_JUST_A_KEY: ex.pair_to_mich([ex.string_to_mich("\"KEY_EXISTS\""), ex.string_to_mich("\"just_a_key\"")])
     };
 }
 export const test_binding = new Test_binding();
