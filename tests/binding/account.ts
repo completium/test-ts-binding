@@ -41,7 +41,7 @@ export class Account {
         throw new Error("Contract not initialised");
     }
     errors = {
-        Wait_5_minutes_before_you_decrement_again: ex.string_to_mich("\"Wait 5 minutes before you decrement again\""),
+        r1: ex.string_to_mich("\"Wait 5 minutes before you decrement again\""),
         INVALID_CALLER: ex.string_to_mich("\"INVALID_CALLER\"")
     };
 }

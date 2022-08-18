@@ -47,7 +47,7 @@ describe('[VERIFICATION] Call entry', async () => {
     set_mockup_now(new Date('1970-01-01T00:01'))
     await expect_to_fail(async () => {
       await account.sub({ as : alice })
-    }, account.errors.Wait_5_minutes_before_you_decrement_again)
+    }, account.errors.r1)
   })
   it("Call 'sub'", async () => {
     const now = new Date()
