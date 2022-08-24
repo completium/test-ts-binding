@@ -194,6 +194,20 @@ export class Test_binding {
             await ex.call(this.address, "myentry2", myentry2_arg_to_mich(arg), params);
         }
     }
+    async get_owner(): Promise<ex.Address> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            return new ex.Address(storage.owner);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_oa(): Promise<ex.Option<ex.Address>> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            return new ex.Option<ex.Address>(storage.oa == null ? null : (x => { return new ex.Address(x); })(storage.oa));
+        }
+        throw new Error("Contract not initialised");
+    }
     async get_s(): Promise<ex.Int> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);

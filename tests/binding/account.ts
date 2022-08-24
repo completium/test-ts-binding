@@ -26,6 +26,13 @@ export class Account {
             await ex.call(this.address, "sub", sub_arg_to_mich(), params);
         }
     }
+    async get_owner(): Promise<ex.Address> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            return new ex.Address(storage.owner);
+        }
+        throw new Error("Contract not initialised");
+    }
     async get_total(): Promise<ex.Int> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);

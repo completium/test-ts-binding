@@ -51,7 +51,7 @@ describe('[VERIFICATION] Call entry', async () => {
   })
   it("Call 'sub'", async () => {
     const now = new Date()
-    set_mockup_now(new Date(now))
+    set_mockup_now(now)
     await account.sub({ as : alice })
     const total_after = await account.get_total()
     assert(total_after.equals(new Int(4)))
