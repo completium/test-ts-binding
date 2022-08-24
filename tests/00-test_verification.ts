@@ -26,7 +26,7 @@ ex.set_mockup_now(new Date(Date.now()))
 
 describe('[VERIFICATION] Contract deployment', async () => {
   it('Deploy test_binding', async () => {
-    await account.deploy(new Address(alice.pkh), { as: alice })
+    await account.deploy(alice.get_address(), { as: alice })
   });
 })
 
