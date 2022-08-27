@@ -1,4 +1,47 @@
 import * as ex from "@completium/experiment-ts";
+
+
+export abstract class anenum /*implements ex.enum*/ {
+    _kind : "A" | "B" | "C"
+    constructor(k : "A" | "B" | "C") {
+        this._kind = k
+    }
+    kind() { return this._kind }
+    //abstract to_mich() : ex.Micheline
+    //from_mich(m : ex.Micheline) {
+    //    new A(new ex.Nat(0))
+    //}
+}
+
+export class A extends anenum {
+    _content : ex.Nat
+    constructor(c : ex.Nat) {
+        super("A")
+        this._content = c
+    }
+    //to_mich() {
+    //    return ex.pair_to_mich([])
+    //}
+    get() { return this._content }
+}
+
+export class B extends anenum {
+    _content : [ ex.Int, string ]
+    constructor(c : [ ex.Int, string ]) {
+        super("B")
+        this._content = c
+    }
+    get() { return this._content }
+}
+
+export class C extends anenum {
+    constructor() {
+        super("C")
+    }
+}
+
+
+
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -358,6 +401,19 @@ export class Test_binding {
                 res.push([(x => { return new ex.Address(x); })(e[0]), (x => { return { nb_visits2: (x => { return new ex.Nat(x); })(x.nb_visits2), last: (x => { return new Date(x); })(x.last) }; })(e[1])]);
             }
             return res;
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_a_value() : Promise<anenum> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            if (storage.a_value.A !== undefined) {
+                return new A(new ex.Nat(storage.a_value.A))
+            } else if (storage.a_value.B !== undefined) {
+                return new B([new ex.Int(storage.a_value.B[Object.keys(storage.a_value.B)[0]]), storage.a_value.B[Object.keys(storage.a_value.B)[1]]])
+            } else {
+                return new C()
+            }
         }
         throw new Error("Contract not initialised");
     }

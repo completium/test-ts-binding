@@ -61,6 +61,15 @@ asset visitor_2 {
   last : date = now
 }
 
+enum anenum =
+| A <int>
+| B <nat * string>
+| C
+
+variable a_value : anenum = A(3)
+variable b_value : anenum = B((3, "an str"))
+variable c_value : anenum = C
+
 entry myentry(arg : all) {
   s := arg.a + arg.b;
   o := arg.k;
