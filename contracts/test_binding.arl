@@ -94,3 +94,10 @@ entry myentry2(arg : nat * string) {
     fail("NOT_TO_BE_CALLED")
   }
 }
+
+entry myentry3(ev : anenum) {
+  called by owner
+  effect {
+    a_value := ev
+  }
+}

@@ -1,47 +1,34 @@
 import * as ex from "@completium/experiment-ts";
-
-
-export abstract class anenum /*implements ex.enum*/ {
-    _kind : "A" | "B" | "C"
-    constructor(k : "A" | "B" | "C") {
-        this._kind = k
-    }
-    kind() { return this._kind }
-    //abstract to_mich() : ex.Micheline
-    //from_mich(m : ex.Micheline) {
-    //    new A(new ex.Nat(0))
-    //}
+export enum anenum_types {
+    A = "A",
+    B = "B",
+    C = "C"
 }
-
+export abstract class anenum extends ex.Enum<anenum_types> {
+}
 export class A extends anenum {
-    _content : ex.Nat
-    constructor(c : ex.Nat) {
-        super("A")
-        this._content = c
+    constructor(private content: ex.Int) {
+        super(anenum_types.A);
     }
-    //to_mich() {
-    //    return ex.pair_to_mich([])
-    //}
-    get() { return this._content }
+    to_mich() { return ex.left_to_mich(this.content.to_mich()); }
+    get() { return this.content; }
 }
-
 export class B extends anenum {
-    _content : [ ex.Int, string ]
-    constructor(c : [ ex.Int, string ]) {
-        super("B")
-        this._content = c
+    constructor(private content: [
+        ex.Nat,
+        string
+    ]) {
+        super(anenum_types.B);
     }
-    get() { return this._content }
+    to_mich() { return ex.right_to_mich(ex.left_to_mich(ex.pair_to_mich([this.content[0].to_mich(), ex.string_to_mich(this.content[1])]))); }
+    get() { return this.content; }
 }
-
 export class C extends anenum {
     constructor() {
-        super("C")
+        super(anenum_types.C);
     }
+    to_mich() { return ex.right_to_mich(ex.right_to_mich(ex.unit_mich)); }
 }
-
-
-
 export interface all {
     a: ex.Nat;
     b: ex.Int;
@@ -114,8 +101,14 @@ export const all_mich_type: ex.MichelineType = ex.pair_array_to_mich_type([
         ])
     ])
 ]);
-export const mich_to_all = (v: ex.Micheline): all => {
-    const fields = ex.annotated_mich_to_array(v, all_mich_type);
+export const mich_to_all = (v: ex.Micheline, collapsed: boolean = false): all => {
+    let fields = [];
+    if (collapsed) {
+        fields = ex.mich_to_pairs(v);
+    }
+    else {
+        fields = ex.annotated_mich_to_array(v, all_mich_type);
+    }
     return { a: ex.mich_to_nat(fields[0]), b: ex.mich_to_int(fields[1]), c: ex.mich_to_tez(fields[2]), d: ex.mich_to_rational(fields[3]), e: ex.mich_to_bool(fields[4]), f: ex.mich_to_bytes(fields[5]), g: ex.mich_to_string(fields[6]), h: ex.mich_to_date(fields[7]), i: ex.mich_to_duration(fields[8]), j: ex.mich_to_address(fields[9]), k: ex.mich_to_option(fields[10], x => { return ex.mich_to_nat(x); }), n: ex.mich_to_list(fields[11], x => { return ex.mich_to_string(x); }), p: ex.mich_to_list(fields[12], x => { return (p => {
             const p0 = (p as ex.Mpair);
             const p1 = (p0.args[1] as ex.Mpair);
@@ -156,11 +149,17 @@ export const visitor_2_value_mich_type: ex.MichelineType = ex.pair_array_to_mich
     ex.prim_annot_to_mich_type("nat", ["%nb_visits2"]),
     ex.prim_annot_to_mich_type("timestamp", ["%last"])
 ]);
-export const mich_to_visitor_value = (v: ex.Micheline): visitor_value => {
+export const mich_to_visitor_value = (v: ex.Micheline, collapsed: boolean = false): visitor_value => {
     return ex.mich_to_nat(v);
 };
-export const mich_to_visitor_2_value = (v: ex.Micheline): visitor_2_value => {
-    const fields = ex.annotated_mich_to_array(v, visitor_2_value_mich_type);
+export const mich_to_visitor_2_value = (v: ex.Micheline, collapsed: boolean = false): visitor_2_value => {
+    let fields = [];
+    if (collapsed) {
+        fields = ex.mich_to_pairs(v);
+    }
+    else {
+        fields = ex.annotated_mich_to_array(v, visitor_2_value_mich_type);
+    }
     return { nb_visits2: ex.mich_to_nat(fields[0]), last: ex.mich_to_date(fields[1]) };
 };
 export const visitor_value_cmp = (a: visitor_value, b: visitor_value) => {
@@ -212,10 +211,22 @@ const myentry2_arg_to_mich = (arg: [
 ]): ex.Micheline => {
     return ex.pair_to_mich([arg[0].to_mich(), ex.string_to_mich(arg[1])]);
 }
+const myentry3_arg_to_mich = (ev: anenum): ex.Micheline => {
+    return ev.to_mich();
+}
 export class Test_binding {
     address: string | undefined;
-    get_address(): string | undefined {
-        return this.address;
+    get_address(): ex.Address {
+        if (undefined != this.address) {
+            return new ex.Address(this.address);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_balance(): Promise<ex.Tez> {
+        if (null != this.address) {
+            return await ex.get_balance(new ex.Address(this.address));
+        }
+        throw new Error("Contract not initialised");
     }
     async deploy(owner: ex.Address, oa: ex.Option<ex.Address>, params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/test_binding.arl", {
@@ -235,6 +246,11 @@ export class Test_binding {
     ], params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
             await ex.call(this.address, "myentry2", myentry2_arg_to_mich(arg), params);
+        }
+    }
+    async myentry3(ev: anenum, params: Partial<ex.Parameters>): Promise<any> {
+        if (this.address != undefined) {
+            await ex.call(this.address, "myentry3", myentry3_arg_to_mich(ev), params);
         }
     }
     async get_owner(): Promise<ex.Address> {
@@ -293,7 +309,7 @@ export class Test_binding {
                 ]
             ]> = [];
             for (let e of storage.m.entries()) {
-                res.push([(x => { return new ex.Nat(x); })(e[0]), (x => { return [(x => { return x; })(x[0]), (x => { return new ex.Int(x); })(x[1])]; })(e[1])]);
+                res.push([(x => { return new ex.Nat(x); })(e[0]), (x => { return [(x => { return x; })(x[Object.keys(x)[0]]), (x => { return new ex.Int(x); })(x[Object.keys(x)[1]])]; })(e[1])]);
             }
             return res;
         }
@@ -322,7 +338,7 @@ export class Test_binding {
                         ex.Nat,
                         ex.Int
                     ]> = []; for (let i = 0; i < x.length; i++) {
-                        res.push((x => { return [(x => { return x; })(x[0]), (x => { return new ex.Nat(x); })(x[1]), (x => { return new ex.Int(x); })(x[2])]; })(x[i]));
+                        res.push((x => { return [(x => { return x; })(x[Object.keys(x)[0]]), (x => { return new ex.Nat(x); })(x[Object.keys(x)[1]]), (x => { return new ex.Int(x); })(x[Object.keys(x)[2]])]; })(x[i]));
                     } return res; })(x.f13) }; })(storage.l1[i]));
             }
             return res;
@@ -342,7 +358,7 @@ export class Test_binding {
                             ex.Nat,
                             ex.Int
                         ]> = []; for (let i = 0; i < x.length; i++) {
-                            res.push((x => { return [(x => { return x; })(x[0]), (x => { return new ex.Nat(x); })(x[1]), (x => { return new ex.Int(x); })(x[2])]; })(x[i]));
+                            res.push((x => { return [(x => { return x; })(x[Object.keys(x)[0]]), (x => { return new ex.Nat(x); })(x[Object.keys(x)[1]]), (x => { return new ex.Int(x); })(x[Object.keys(x)[2]])]; })(x[i]));
                         } return res; })(x.f13) }; })(x[i]));
                 } return res; })(storage.l2[i]));
             }
@@ -360,7 +376,7 @@ export class Test_binding {
                     ex.Nat,
                     ex.Int
                 ]> = []; for (let i = 0; i < x.length; i++) {
-                    res.push((x => { return [(x => { return x; })(x[0]), (x => { return new ex.Nat(x); })(x[1]), (x => { return new ex.Int(x); })(x[2])]; })(x[i]));
+                    res.push((x => { return [(x => { return x; })(x[Object.keys(x)[0]]), (x => { return new ex.Nat(x); })(x[Object.keys(x)[1]]), (x => { return new ex.Int(x); })(x[Object.keys(x)[2]])]; })(x[i]));
                 } return res; })(storage.r.f13) };
         }
         throw new Error("Contract not initialised");
@@ -404,23 +420,60 @@ export class Test_binding {
         }
         throw new Error("Contract not initialised");
     }
-    async get_a_value() : Promise<anenum> {
+    async get_a_value(): Promise<anenum> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            if (storage.a_value.A !== undefined) {
-                return new A(new ex.Nat(storage.a_value.A))
-            } else if (storage.a_value.B !== undefined) {
-                return new B([new ex.Int(storage.a_value.B[Object.keys(storage.a_value.B)[0]]), storage.a_value.B[Object.keys(storage.a_value.B)[1]]])
-            } else {
-                return new C()
+            if (storage.a_value.C !== undefined) {
+                return new C();
             }
+            else if (storage.a_value.B !== undefined) {
+                return new B(((x): [
+                    ex.Nat,
+                    string
+                ] => { return [(x => { return new ex.Nat(x); })(x[Object.keys(x)[0]]), (x => { return x; })(x[Object.keys(x)[1]])]; })(storage.a_value.B));
+            }
+            else
+                return new A(((x): ex.Int => { return new ex.Int(x); })(storage.a_value.A));
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_b_value(): Promise<anenum> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            if (storage.b_value.C !== undefined) {
+                return new C();
+            }
+            else if (storage.b_value.B !== undefined) {
+                return new B(((x): [
+                    ex.Nat,
+                    string
+                ] => { return [(x => { return new ex.Nat(x); })(x[Object.keys(x)[0]]), (x => { return x; })(x[Object.keys(x)[1]])]; })(storage.b_value.B));
+            }
+            else
+                return new A(((x): ex.Int => { return new ex.Int(x); })(storage.b_value.A));
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_c_value(): Promise<anenum> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            if (storage.c_value.C !== undefined) {
+                return new C();
+            }
+            else if (storage.c_value.B !== undefined) {
+                return new B(((x): [
+                    ex.Nat,
+                    string
+                ] => { return [(x => { return new ex.Nat(x); })(x[Object.keys(x)[0]]), (x => { return x; })(x[Object.keys(x)[1]])]; })(storage.c_value.B));
+            }
+            else
+                return new A(((x): ex.Int => { return new ex.Int(x); })(storage.c_value.A));
         }
         throw new Error("Contract not initialised");
     }
     errors = {
-        NOT_TO_BE_CALLED: ex.string_to_mich("\"NOT_TO_BE_CALLED\""),
         INVALID_CALLER: ex.string_to_mich("\"INVALID_CALLER\""),
-        KEY_EXISTS_JUST_A_KEY: ex.pair_to_mich([ex.string_to_mich("\"KEY_EXISTS\""), ex.string_to_mich("\"just_a_key\"")])
+        NOT_TO_BE_CALLED: ex.string_to_mich("\"NOT_TO_BE_CALLED\"")
     };
 }
 export const test_binding = new Test_binding();

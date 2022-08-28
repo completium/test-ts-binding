@@ -7,8 +7,17 @@ const incrementBoth_arg_to_mich = (inc1: ex.Nat, inc2: ex.Nat): ex.Micheline => 
 }
 export class Counter_two_numbers {
     address: string | undefined;
-    get_address(): string | undefined {
-        return this.address;
+    get_address(): ex.Address {
+        if (undefined != this.address) {
+            return new ex.Address(this.address);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_balance(): Promise<ex.Tez> {
+        if (null != this.address) {
+            return await ex.get_balance(new ex.Address(this.address));
+        }
+        throw new Error("Contract not initialised");
     }
     async deploy(params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/counter_two_numbers.arl", {}, params);

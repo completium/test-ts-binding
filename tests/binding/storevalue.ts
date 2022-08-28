@@ -7,8 +7,17 @@ const double_arg_to_mich = (): ex.Micheline => {
 }
 export class Storevalue {
     address: string | undefined;
-    get_address(): string | undefined {
-        return this.address;
+    get_address(): ex.Address {
+        if (undefined != this.address) {
+            return new ex.Address(this.address);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_balance(): Promise<ex.Tez> {
+        if (null != this.address) {
+            return await ex.get_balance(new ex.Address(this.address));
+        }
+        throw new Error("Contract not initialised");
     }
     async deploy(counter: ex.Nat, params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/storevalue.arl", {

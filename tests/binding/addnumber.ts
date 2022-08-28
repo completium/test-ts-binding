@@ -4,8 +4,17 @@ const increment_arg_to_mich = (quantity: ex.Nat): ex.Micheline => {
 }
 export class Addnumber {
     address: string | undefined;
-    get_address(): string | undefined {
-        return this.address;
+    get_address(): ex.Address {
+        if (undefined != this.address) {
+            return new ex.Address(this.address);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_balance(): Promise<ex.Tez> {
+        if (null != this.address) {
+            return await ex.get_balance(new ex.Address(this.address));
+        }
+        throw new Error("Contract not initialised");
     }
     async deploy(params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/addnumber.arl", {}, params);

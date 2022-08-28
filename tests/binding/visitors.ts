@@ -15,8 +15,14 @@ export const visitor_value_mich_type: ex.MichelineType = ex.pair_array_to_mich_t
     ex.prim_annot_to_mich_type("string", ["%name"]),
     ex.prim_annot_to_mich_type("nat", ["%nbvisits"])
 ]);
-export const mich_to_visitor_value = (v: ex.Micheline): visitor_value => {
-    const fields = ex.annotated_mich_to_array(v, visitor_value_mich_type);
+export const mich_to_visitor_value = (v: ex.Micheline, collapsed: boolean = false): visitor_value => {
+    let fields = [];
+    if (collapsed) {
+        fields = ex.mich_to_pairs(v);
+    }
+    else {
+        fields = ex.annotated_mich_to_array(v, visitor_value_mich_type);
+    }
     return { name: ex.mich_to_string(fields[0]), nbvisits: ex.mich_to_nat(fields[1]) };
 };
 export const visitor_value_cmp = (a: visitor_value, b: visitor_value) => {
@@ -48,8 +54,17 @@ const visit_arg_to_mich = (l: string): ex.Micheline => {
 }
 export class Visitors {
     address: string | undefined;
-    get_address(): string | undefined {
-        return this.address;
+    get_address(): ex.Address {
+        if (undefined != this.address) {
+            return new ex.Address(this.address);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_balance(): Promise<ex.Tez> {
+        if (null != this.address) {
+            return await ex.get_balance(new ex.Address(this.address));
+        }
+        throw new Error("Contract not initialised");
     }
     async deploy(params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/visitors.arl", {}, params);

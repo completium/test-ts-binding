@@ -8,7 +8,9 @@ import {
   all,
   visitor_2_value_cmp,
   visitor_2_container,
-  visitor_2_value
+  visitor_2_value,
+  B,
+  anenum_types
 } from './binding/test_binding'
 
 import { counter } from './binding/counter'
@@ -163,5 +165,12 @@ describe('[TEST_BINDING] Call entry', async () => {
     await expect_to_fail(async () => {
       await test_binding.myentry2([ new Nat(20), "an argument" ], { as : alice })
     }, test_binding.errors.NOT_TO_BE_CALLED)
+  })
+  it("Call to entry 3 to set enum value", async () => {
+    await test_binding.myentry3(new B([new Nat(3), "an arg value"]), { as : alice })
+    const a_value = (await test_binding.get_a_value() as B)
+    assert(a_value.type() == anenum_types.B)
+    assert(a_value.get()[0].equals(new Nat(3)))
+    assert(a_value.get()[1] == "an arg value")
   })
 })
