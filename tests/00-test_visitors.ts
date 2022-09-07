@@ -1,7 +1,7 @@
 import * as ex from "@completium/experiment-ts";
 import { Nat } from "@completium/experiment-ts";
 
-import { visitor_value_cmp, visitors } from './binding/visitors'
+import { visitor_value, visitors } from './binding/visitors'
 
 const assert = require('assert')
 
@@ -36,13 +36,13 @@ describe('[VISITORS] Call entry', async () => {
     await visitors.register("alice", "Alice", { as : alice })
     const visitors_after = await visitors.get_visitor()
     assert(visitors_after.length === 1)
-    assert(visitor_value_cmp(visitors_after[0][1], { name: "Alice", nbvisits: new Nat(0) }))
+    assert(visitors_after[0][1].equals(new visitor_value( "Alice", new Nat(0))))
   })
   it("Call 'visit'", async () => {
     await visitors.visit("alice", { as : alice })
     const visitors_after = await visitors.get_visitor()
     assert(visitors_after.length === 1)
-    assert(visitor_value_cmp(visitors_after[0][1], { name: "Alice", nbvisits: new Nat(1) }))
+    assert(visitors_after[0][1].equals(new visitor_value("Alice", new Nat(1))))
   })
 })
 

@@ -1,44 +1,36 @@
 import * as ex from "@completium/experiment-ts";
 export type visitor_key = string;
-export const visitor_key_to_mich = (x: visitor_key): ex.Micheline => {
-    return ex.string_to_mich(x);
-};
 export const visitor_key_mich_type: ex.MichelineType = ex.prim_annot_to_mich_type("string", []);
-export interface visitor_value {
-    name: string;
-    nbvisits: ex.Nat;
+export class visitor_value implements ex.ArchetypeType {
+    constructor(public name: string, public nbvisits: ex.Nat) { }
+    toString(): string {
+        return JSON.stringify(this, null, 2);
+    }
+    to_mich(): ex.Micheline {
+        return ex.pair_to_mich([ex.string_to_mich(this.name), this.nbvisits.to_mich()]);
+    }
+    equals(v: visitor_value): boolean {
+        return (this.name == v.name && this.name == v.name && this.nbvisits.equals(v.nbvisits));
+    }
 }
-export const visitor_value_to_mich = (x: visitor_value): ex.Micheline => {
-    return ex.pair_to_mich([ex.string_to_mich(x.name), x.nbvisits.to_mich()]);
-};
 export const visitor_value_mich_type: ex.MichelineType = ex.pair_array_to_mich_type([
     ex.prim_annot_to_mich_type("string", ["%name"]),
     ex.prim_annot_to_mich_type("nat", ["%nbvisits"])
 ]);
 export const mich_to_visitor_value = (v: ex.Micheline, collapsed: boolean = false): visitor_value => {
-    let fields = [];
+    let fields: ex.Micheline[] = [];
     if (collapsed) {
         fields = ex.mich_to_pairs(v);
     }
     else {
         fields = ex.annotated_mich_to_array(v, visitor_value_mich_type);
     }
-    return { name: ex.mich_to_string(fields[0]), nbvisits: ex.mich_to_nat(fields[1]) };
-};
-export const visitor_value_cmp = (a: visitor_value, b: visitor_value) => {
-    return (a.name == b.name && a.nbvisits.equals(b.nbvisits));
+    return new visitor_value(ex.mich_to_string(fields[0]), ex.mich_to_nat(fields[1]));
 };
 export type visitor_container = Array<[
     visitor_key,
     visitor_value
 ]>;
-export const visitor_container_to_mich = (x: visitor_container): ex.Micheline => {
-    return ex.list_to_mich(x, x => {
-        const x_key = x[0];
-        const x_value = x[1];
-        return ex.elt_to_mich(ex.string_to_mich(x_key), ex.pair_to_mich([ex.string_to_mich(x_value.name), x_value.nbvisits.to_mich()]));
-    });
-};
 export const visitor_container_mich_type: ex.MichelineType = ex.pair_to_mich_type("map", ex.prim_annot_to_mich_type("string", []), ex.pair_array_to_mich_type([
     ex.prim_annot_to_mich_type("string", ["%name"]),
     ex.prim_annot_to_mich_type("nat", ["%nbvisits"])
@@ -88,7 +80,7 @@ export class Visitors {
                 visitor_value
             ]> = [];
             for (let e of storage.entries()) {
-                res.push([(x => { return x; })(e[0]), (x => { return { name: (x => { return x; })(x.name), nbvisits: (x => { return new ex.Nat(x); })(x.nbvisits) }; })(e[1])]);
+                res.push([(x => { return x; })(e[0]), (x => { return new visitor_value((x => { return x; })(x.name), (x => { return new ex.Nat(x); })(x.nbvisits)); })(e[1])]);
             }
             return res;
         }

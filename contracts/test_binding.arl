@@ -101,3 +101,11 @@ entry myentry3(ev : anenum) {
     a_value := ev
   }
 }
+
+getter mygetter() : anenum {
+  return a_value
+}
+
+view myview() : anenum {
+  return a_value
+}

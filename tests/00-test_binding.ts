@@ -4,9 +4,7 @@ const assert = require('assert')
 
 import {
   test_binding,
-  all_cmp,
   all,
-  visitor_2_value_cmp,
   visitor_2_container,
   visitor_2_value,
   B,
@@ -35,23 +33,23 @@ set_mockup_now(new Date(Date.now()))
 
 /* Test data --------------------------------------------------------------- */
 
-const r_value : all = {
-  a : new Nat(14),
-  b : new Int(-12),
-  c : new Tez(12334, "mutez"),
-  d : new Rational(0.456),
-  e : true,
-  f : new Bytes("0000"),
-  g : "a string value",
-  h : new Date(),
-  i : new Duration(""),
-  j : new Address(alice.pkh),
-  k : new Option<Nat>(new Nat(4)),
-  n : [ "an list element" ],
-  p : [ ["a tuple set element", new Nat(7), new Int(9) ],
-        ["another tuple set element", new Nat(8), new Int(10)]
-      ]
-}
+const r_value = new all(
+  new Nat(14),
+  new Int(-12),
+  new Tez(12334, "mutez"),
+  new Rational(0.456),
+  true,
+  new Bytes("0000"),
+  "a string value",
+  new Date(),
+  new Duration(""),
+  new Address(alice.pkh),
+  new Option<Nat>(new Nat(4)),
+  [ "an list element" ],
+  [ ["a tuple set element", new Nat(7), new Int(9) ],
+    ["another tuple set element", new Nat(8), new Int(10)]
+  ]
+)
 
 const l_value = [ new Int(2), new Int(4), new Int(6) ]
 
@@ -63,14 +61,11 @@ const m_value : Array<[ Nat, [ string, Int ] ]> = [ [ new Nat(3), [ "test", new 
 
 const s1_value = [ new Nat(3), new Nat(4), new Nat(5) ]
 
-const visitor_value : Array<[ Address, Nat ]> = [ [ new Address(alice.pkh), new Nat(1) ] ]
+const v_value : Array<[ Address, Nat ]> = [ [ new Address(alice.pkh), new Nat(1) ] ]
 
-const visitor_2_value : visitor_2_value = {
-  nb_visits2 : new Nat(1),
-  last : new Date()
-}
+const v_2_value = new visitor_2_value(new Nat(1), new Date())
 
-const visitor_2_container : visitor_2_container = [ [ new Address(alice.pkh), visitor_2_value ] ]
+const visitor_2_container : visitor_2_container = [ [ new Address(alice.pkh), v_2_value ] ]
 
 const just_a_key_container : Address[] = [ new Address(alice.pkh) ]
 
@@ -92,7 +87,7 @@ describe('[TEST_BINDING] Call entry', async () => {
   })
   it("Test 'r' value record getter", async () => {
     const r = await test_binding.get_r();
-    assert(all_cmp(r_value, r))
+    assert(r_value.equals(r))
   })
   it("Test 'l' value list of int getter", async () => {
     const l = await test_binding.get_l();
@@ -105,7 +100,7 @@ describe('[TEST_BINDING] Call entry', async () => {
     const l1 = await test_binding.get_l1();
     assert(l1.length == l1_value.length)
     for (let i = 0; i < l1.length; i++) {
-      assert(all_cmp(l1[i], l1_value[i]))
+      assert(l1[i].equals(l1_value[i]))
     }
   })
   it("Test 'l2' value list of list of record 'all' getter", async () => {
@@ -113,7 +108,7 @@ describe('[TEST_BINDING] Call entry', async () => {
     assert(l2.length == l2_value.length)
     for (let j = 0; j < l2.length; j++) {
       for (let i = 0; i < l2[j].length; i++) {
-        assert(all_cmp(l2[j][i], l2_value[j][i]))
+        assert(l2[j][i].equals(l2_value[j][i]))
       }
     }
   })
@@ -135,10 +130,10 @@ describe('[TEST_BINDING] Call entry', async () => {
   })
   it("Test 'visitor' one field asset value getter", async () => {
     const v = await test_binding.get_visitor()
-    assert(v.length == visitor_value.length)
+    assert(v.length == v_value.length)
     for (let i = 0; i < v.length; i++) {
-      assert(v[i][0].equals(visitor_value[i][0]))
-      assert(v[i][1].equals(visitor_value[i][1]))
+      assert(v[i][0].equals(v_value[i][0]))
+      assert(v[i][1].equals(v_value[i][1]))
     }
   })
   it("Test 'visitor2' several fields asset value getter", async () => {
@@ -146,7 +141,7 @@ describe('[TEST_BINDING] Call entry', async () => {
     assert(v.length == visitor_2_container.length)
     for (let i = 0; i < v.length; i++) {
       assert(v[i][0].equals(visitor_2_container[i][0]))
-      assert(visitor_2_value_cmp(v[i][1], visitor_2_value))
+      assert(v[i][1].equals(v_2_value))
     }
   })
   it("Test 'just_a_key' one key field asset getter", async () => {
@@ -173,4 +168,8 @@ describe('[TEST_BINDING] Call entry', async () => {
     assert(a_value.get()[0].equals(new Nat(3)))
     assert(a_value.get()[1] == "an arg value")
   })
+  //it("Call to getter that returns an anenum value", async () => {
+  //  const value = await test_binding.mygetter({ as : alice });
+  //  assert(value.type() == anenum_types.B)
+  //})
 })
