@@ -1,5 +1,5 @@
+import { Bytes, Nat } from "@completium/archetype-ts-types";
 import * as ex from "@completium/experiment-ts";
-import { Nat, Bytes } from "@completium/archetype-ts-types";
 
 import { contract_eq } from './binding/contract_eq'
 
@@ -57,10 +57,10 @@ describe('[CONTRACT_EQ] Call entry', async () => {
 
   it("Call 'set_d'", async () => {
     const d_before = await contract_eq.get_d();
-    assert(!d_before)
-    await contract_eq.set_d(true, { as: alice })
+    assert(d_before)
+    await contract_eq.set_d(false, { as: alice })
     const d_after = await contract_eq.get_d();
-    assert(d_after)
+    assert(!d_after)
   })
 })
 
