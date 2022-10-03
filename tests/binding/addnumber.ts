@@ -1,18 +1,22 @@
 import * as ex from "@completium/experiment-ts";
-const increment_arg_to_mich = (quantity: ex.Nat): ex.Micheline => {
+import * as att from "@completium/archetype-ts-types";
+const increment_arg_to_mich = (quantity: att.Nat): att.Micheline => {
     return quantity.to_mich();
 }
 export class Addnumber {
     address: string | undefined;
-    get_address(): ex.Address {
+    constructor(address: string | undefined = undefined) {
+        this.address = address;
+    }
+    get_address(): att.Address {
         if (undefined != this.address) {
-            return new ex.Address(this.address);
+            return new att.Address(this.address);
         }
         throw new Error("Contract not initialised");
     }
-    async get_balance(): Promise<ex.Tez> {
+    async get_balance(): Promise<att.Tez> {
         if (null != this.address) {
-            return await ex.get_balance(new ex.Address(this.address));
+            return await ex.get_balance(new att.Address(this.address));
         }
         throw new Error("Contract not initialised");
     }
@@ -20,15 +24,22 @@ export class Addnumber {
         const address = await ex.deploy("./contracts/addnumber.arl", {}, params);
         this.address = address;
     }
-    async increment(quantity: ex.Nat, params: Partial<ex.Parameters>): Promise<any> {
+    async increment(quantity: att.Nat, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
-            await ex.call(this.address, "increment", increment_arg_to_mich(quantity), params);
+            return await ex.call(this.address, "increment", increment_arg_to_mich(quantity), params);
         }
+        throw new Error("Contract not initialised");
     }
-    async get_count(): Promise<ex.Nat> {
+    async get_increment_param(quantity: att.Nat, params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "increment", increment_arg_to_mich(quantity), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_count(): Promise<att.Nat> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return new ex.Nat(storage);
+            return new att.Nat(storage);
         }
         throw new Error("Contract not initialised");
     }

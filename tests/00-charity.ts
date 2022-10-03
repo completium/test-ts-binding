@@ -1,5 +1,6 @@
 import * as ex from "@completium/experiment-ts";
-import { expect_to_fail, Nat, Tez } from "@completium/experiment-ts";
+import { expect_to_fail } from "@completium/experiment-ts";
+import { Nat, Tez } from "@completium/archetype-ts-types";
 
 import { charity } from './binding/charity'
 

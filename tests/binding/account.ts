@@ -1,51 +1,69 @@
 import * as ex from "@completium/experiment-ts";
-const add_arg_to_mich = (value: ex.Nat): ex.Micheline => {
+import * as att from "@completium/archetype-ts-types";
+const add_arg_to_mich = (value: att.Nat): att.Micheline => {
     return value.to_mich();
 }
-const sub_arg_to_mich = (): ex.Micheline => {
-    return ex.unit_mich;
+const sub_arg_to_mich = (): att.Micheline => {
+    return att.unit_mich;
 }
 export class Account {
     address: string | undefined;
-    get_address(): ex.Address {
+    constructor(address: string | undefined = undefined) {
+        this.address = address;
+    }
+    get_address(): att.Address {
         if (undefined != this.address) {
-            return new ex.Address(this.address);
+            return new att.Address(this.address);
         }
         throw new Error("Contract not initialised");
     }
-    async get_balance(): Promise<ex.Tez> {
+    async get_balance(): Promise<att.Tez> {
         if (null != this.address) {
-            return await ex.get_balance(new ex.Address(this.address));
+            return await ex.get_balance(new att.Address(this.address));
         }
         throw new Error("Contract not initialised");
     }
-    async deploy(owner: ex.Address, params: Partial<ex.Parameters>) {
+    async deploy(owner: att.Address, params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/account.arl", {
-            owner: owner.toString()
+            owner: owner.to_mich()
         }, params);
         this.address = address;
     }
-    async add(value: ex.Nat, params: Partial<ex.Parameters>): Promise<any> {
+    async add(value: att.Nat, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
-            await ex.call(this.address, "add", add_arg_to_mich(value), params);
-        }
-    }
-    async sub(params: Partial<ex.Parameters>): Promise<any> {
-        if (this.address != undefined) {
-            await ex.call(this.address, "sub", sub_arg_to_mich(), params);
-        }
-    }
-    async get_owner(): Promise<ex.Address> {
-        if (this.address != undefined) {
-            const storage = await ex.get_storage(this.address);
-            return new ex.Address(storage.owner);
+            return await ex.call(this.address, "add", add_arg_to_mich(value), params);
         }
         throw new Error("Contract not initialised");
     }
-    async get_total(): Promise<ex.Int> {
+    async sub(params: Partial<ex.Parameters>): Promise<any> {
+        if (this.address != undefined) {
+            return await ex.call(this.address, "sub", sub_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_add_param(value: att.Nat, params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "add", add_arg_to_mich(value), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_sub_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "sub", sub_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_owner(): Promise<att.Address> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return new ex.Int(storage.total);
+            return new att.Address(storage.owner);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_total(): Promise<att.Int> {
+        if (this.address != undefined) {
+            const storage = await ex.get_storage(this.address);
+            return new att.Int(storage.total);
         }
         throw new Error("Contract not initialised");
     }
@@ -57,8 +75,8 @@ export class Account {
         throw new Error("Contract not initialised");
     }
     errors = {
-        r1: ex.string_to_mich("\"Wait 5 minutes before you decrement again\""),
-        INVALID_CALLER: ex.string_to_mich("\"INVALID_CALLER\"")
+        r1: att.string_to_mich("\"Wait 5 minutes before you decrement again\""),
+        INVALID_CALLER: att.string_to_mich("\"INVALID_CALLER\"")
     };
 }
 export const account = new Account();

@@ -1,5 +1,5 @@
 import * as ex from "@completium/experiment-ts";
-import { Nat } from "@completium/experiment-ts";
+import { Nat } from "@completium/archetype-ts-types";
 
 import { visitor_value, visitors } from './binding/visitors'
 

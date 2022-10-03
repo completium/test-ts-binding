@@ -1,5 +1,6 @@
 import * as ex from "@completium/experiment-ts";
-import { Address, cmp_date, expect_to_fail, Int, Nat, set_mockup_now } from "@completium/experiment-ts";
+import { expect_to_fail, set_mockup_now } from "@completium/experiment-ts";
+import { Address, cmp_date, Int, Nat } from "@completium/archetype-ts-types";
 
 import { storevalue } from './binding/storevalue'
 

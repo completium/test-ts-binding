@@ -1,50 +1,68 @@
 import * as ex from "@completium/experiment-ts";
-const collect_arg_to_mich = (requestedAmount: ex.Tez): ex.Micheline => {
+import * as att from "@completium/archetype-ts-types";
+const collect_arg_to_mich = (requestedAmount: att.Tez): att.Micheline => {
     return requestedAmount.to_mich();
 }
-const donate_arg_to_mich = (): ex.Micheline => {
-    return ex.unit_mich;
+const donate_arg_to_mich = (): att.Micheline => {
+    return att.unit_mich;
 }
 export class Charity {
     address: string | undefined;
-    get_address(): ex.Address {
+    constructor(address: string | undefined = undefined) {
+        this.address = address;
+    }
+    get_address(): att.Address {
         if (undefined != this.address) {
-            return new ex.Address(this.address);
+            return new att.Address(this.address);
         }
         throw new Error("Contract not initialised");
     }
-    async get_balance(): Promise<ex.Tez> {
+    async get_balance(): Promise<att.Tez> {
         if (null != this.address) {
-            return await ex.get_balance(new ex.Address(this.address));
+            return await ex.get_balance(new att.Address(this.address));
         }
         throw new Error("Contract not initialised");
     }
-    async deploy(owner: ex.Address, params: Partial<ex.Parameters>) {
+    async deploy(owner: att.Address, params: Partial<ex.Parameters>) {
         const address = await ex.deploy("./contracts/charity.arl", {
-            owner: owner.toString()
+            owner: owner.to_mich()
         }, params);
         this.address = address;
     }
-    async collect(requestedAmount: ex.Tez, params: Partial<ex.Parameters>): Promise<any> {
+    async collect(requestedAmount: att.Tez, params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
-            await ex.call(this.address, "collect", collect_arg_to_mich(requestedAmount), params);
+            return await ex.call(this.address, "collect", collect_arg_to_mich(requestedAmount), params);
         }
+        throw new Error("Contract not initialised");
     }
     async donate(params: Partial<ex.Parameters>): Promise<any> {
         if (this.address != undefined) {
-            await ex.call(this.address, "donate", donate_arg_to_mich(), params);
+            return await ex.call(this.address, "donate", donate_arg_to_mich(), params);
         }
+        throw new Error("Contract not initialised");
     }
-    async get_owner(): Promise<ex.Address> {
+    async get_collect_param(requestedAmount: att.Tez, params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "collect", collect_arg_to_mich(requestedAmount), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_donate_param(params: Partial<ex.Parameters>): Promise<att.CallParameter> {
+        if (this.address != undefined) {
+            return await ex.get_call_param(this.address, "donate", donate_arg_to_mich(), params);
+        }
+        throw new Error("Contract not initialised");
+    }
+    async get_owner(): Promise<att.Address> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return new ex.Address(storage);
+            return new att.Address(storage);
         }
         throw new Error("Contract not initialised");
     }
     errors = {
-        r1: ex.pair_to_mich([ex.string_to_mich("\"INVALID_CONDITION\""), ex.string_to_mich("\"r1\"")]),
-        INVALID_CALLER: ex.string_to_mich("\"INVALID_CALLER\"")
+        r1: att.pair_to_mich([att.string_to_mich("\"INVALID_CONDITION\""), att.string_to_mich("\"r1\"")]),
+        INVALID_CALLER: att.string_to_mich("\"INVALID_CALLER\"")
     };
 }
 export const charity = new Charity();

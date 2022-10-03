@@ -1,7 +1,7 @@
 import * as ex from "@completium/experiment-ts";
-import { Nat } from "@completium/archetype-ts-types";
+import { Nat, Bytes } from "@completium/archetype-ts-types";
 
-import { counter } from './binding/counter'
+import { contract_tz } from './binding/contract_tz'
 
 const assert = require('assert')
 
@@ -23,18 +23,19 @@ ex.set_mockup_now(new Date(Date.now()))
 
 /* Scenario ---------------------------------------------------------------- */
 
-describe('[COUNTER] Contract deployment', async () => {
+describe('[CONTRACT_TZ] Contract deployment', async () => {
   it('Deploy test_binding', async () => {
-    await counter.deploy({ as: alice })
+    await contract_tz.originate(new Nat(0), "", new Bytes(""), { as: alice })
   });
 })
 
-describe('[COUNTER] Call entry', async () => {
-  it("Call 'increment'", async () => {
-    const s_before = await counter.get_count()
-    assert(s_before.equals(new Nat(2)))
-    await counter.increment({ as : alice })
-    const s_after = await counter.get_count()
-    assert(s_after.equals(new Nat(3)))
+describe('[CONTRACT_TZ] Call entry', async () => {
+  it("Call 'myentry'", async () => {
+    const a_before = await contract_tz.get_a();
+    assert(a_before.equals(new Nat(0)))
+    await contract_tz.e1(new Nat(2), { as : alice })
+    const a_after = await contract_tz.get_a();
+    assert(a_after.equals(new Nat(2)))
   })
 })
+

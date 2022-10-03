@@ -1,4 +1,5 @@
-import { Address, Bytes, Duration, expect_to_fail, get_account, Int, Nat, Option, Rational, set_mockup, set_mockup_now, set_quiet, Tez } from '@completium/experiment-ts'
+import { expect_to_fail, get_account, set_mockup, set_mockup_now, set_quiet } from '@completium/experiment-ts'
+import { Address, Bytes, Duration, Int, Nat, Option, Rational, Tez } from '@completium/archetype-ts-types'
 
 const assert = require('assert')
 
