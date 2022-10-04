@@ -1,0 +1,7 @@
+archetype tuple_rev
+
+variable res : ((nat * string) * bytes) = ((0, ""), 0x)
+
+entry set_value(i : ((nat * string) * bytes)) {
+  res := i
+}

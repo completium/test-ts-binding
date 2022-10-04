@@ -1,0 +1,7 @@
+archetype tuple_rev4
+
+variable res : (((nat * string) * bytes) * bool) = (((0, ""), 0x), false)
+
+entry set_value(i : (((nat * string) * bytes) * bool)) {
+  res := i
+}

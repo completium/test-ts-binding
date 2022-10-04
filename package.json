@@ -11,6 +11,10 @@
     "test-contract_eq": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_contract_eq.ts",
     "test-contract_le": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_contract_le.ts",
     "test-contract_p": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_contract_p.ts",
+    "test-tuple": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple.ts",
+    "test-tuple4": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple4.ts",
+    "test-tuple_rev": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple_rev.ts",
+    "test-tuple_rev4": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple_rev4.ts",
     "gen-binding": "completium-cli generate binding-ts _ --input-path ./contracts/ --output-path ./tests/binding/"
   },
   "repository": {
