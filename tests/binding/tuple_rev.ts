@@ -63,7 +63,7 @@ export class Tuple_rev {
     ]> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return [(x => { return [(x => { return new att.Nat(x); })(x[Object.keys(x)[0]]), (x => { return x; })(x[Object.keys(x)[1]])]; })(storage[Object.keys(storage)[0]]), (x => { return new att.Bytes(x); })(storage[Object.keys(storage)[1]])];
+            return [[(x => { return new att.Nat(x); })(storage[Object.keys(storage)[0]]), (x => { return x; })(storage[Object.keys(storage)[1]])], (x => { return new att.Bytes(x); })(storage[Object.keys(storage)[2]])];
         }
         throw new Error("Contract not initialised");
     }

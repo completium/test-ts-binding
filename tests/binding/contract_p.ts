@@ -204,7 +204,7 @@ export class Contract_p {
     ]> {
         if (this.address != undefined) {
             const storage = await ex.get_storage(this.address);
-            return [(x => { return [(x => { return [(x => { return new att.Nat(x); })(x[Object.keys(x)[0]]), (x => { return x; })(x[Object.keys(x)[1]])]; })(x[Object.keys(x)[0]]), (x => { return new att.Bytes(x); })(x[Object.keys(x)[1]])]; })(storage.s[Object.keys(storage.s)[0]]), (x => { return x; })(storage.s[Object.keys(storage.s)[1]])];
+            return [[[(x => { return new att.Nat(x); })(storage.s[Object.keys(storage.s)[0]]), (x => { return x; })(storage.s[Object.keys(storage.s)[1]])], (x => { return new att.Bytes(x); })(storage.s[Object.keys(storage.s)[2]])], (x => { return x; })(storage.s[Object.keys(storage.s)[3]])];
         }
         throw new Error("Contract not initialised");
     }

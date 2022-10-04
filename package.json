@@ -15,6 +15,7 @@
     "test-tuple4": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple4.ts",
     "test-tuple_rev": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple_rev.ts",
     "test-tuple_rev4": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple_rev4.ts",
+    "test-tuple_custom": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_tuple_custom.ts",
     "gen-binding": "completium-cli generate binding-ts _ --input-path ./contracts/ --output-path ./tests/binding/"
   },
   "repository": {
