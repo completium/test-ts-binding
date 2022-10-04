@@ -9,6 +9,7 @@
     "test": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/*.ts",
     "test-contract_tz": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_contract_tz.ts",
     "test-contract_eq": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_contract_eq.ts",
+    "test-contract_le": "ts-mocha --timeout 0 --slow 99999999999999999 ./tests/00-test_contract_le.ts",
     "gen-binding": "completium-cli generate binding-ts _ --input-path ./contracts/ --output-path ./tests/binding/"
   },
   "repository": {

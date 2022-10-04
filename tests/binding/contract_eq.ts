@@ -1,6 +1,5 @@
-import * as att from "@completium/archetype-ts-types";
 import * as ex from "@completium/experiment-ts";
-
+import * as att from "@completium/archetype-ts-types";
 export const storage_mich_stype: att.MichelineType = att.pair_array_to_mich_type([
     att.pair_array_to_mich_type([
         att.prim_annot_to_mich_type("nat", ["%a"]),

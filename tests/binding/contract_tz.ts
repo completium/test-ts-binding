@@ -8,11 +8,7 @@ export const storage_mich_stype: att.MichelineType = att.pair_array_to_mich_type
     ], [])
 ], []);
 const storage_arg_to_mich = (a: att.Nat, b: string, c: att.Bytes): att.Micheline => {
-    return att.pair_to_mich([
-        a.to_mich(),
-        att.string_to_mich(b),
-        c.to_mich()
-    ]);
+    return att.pair_to_mich([a.to_mich(), att.pair_to_mich([att.string_to_mich(b), c.to_mich()])]);
 }
 const e1_arg_to_mich = (_: att.Nat): att.Micheline => {
     return _.to_mich();
